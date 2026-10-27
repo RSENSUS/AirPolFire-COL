@@ -1,39 +1,31 @@
-##### CODIGO PARA PROCESAR INFORMACION ESPACIAL DE LAS RETROTRAYECTORIAS, GENERAR BUFFERS
-##### E INSECTARLOS CON LOS DATOS DE PUNTOS CALIENTES DE 5 DIAS ANTERIORES
-
+##### CODE FOR PROCESSING SPATIAL INFORMATION FROM BACK-TRAJECTORIES, GENERATING BUFFERS,
+##### AND INTERSECTING THEM WITH HOTSPOT DATA FROM THE PREVIOUS 5 DAYS
 #https://bookdown.org/robinlovelace/geocompr/reproj-geo-data.html
 
-#Establecer directorio
-#setwd("C:/Users/PERSONAL/Desktop/CODI/R-CODI/Calibracion/Trayectorias")
+#Load packages
+{
+  library(sf)
+  library(lubridate)
+  library(ggplot2)
+  library(xlsx)
+}
 
-#UdeA
-setwd("C:/Users/tur75984/OneDrive - Temple University/ResearchAssis/CODI/R-CODI/Calibracion")
-#Cargar paquetes
-library(easypackages)
-libraries("sf","lubridate","ggplot2","xlsx")#,"geosphere","jonocarroll/runkeepR","sp","raster","rgdal"
 
 ############################ Cargar datos ########################################
-#Ruta
-#path_<-"C:/Users/PERSONAL/Desktop/CODI/R-CODI/Calibracion/Resultados/" #Personal
-path_<-"C:/Users/tur75984/OneDrive - Temple University/ResearchAssis/CODI/R-CODI/Calibracion/Resultados_v2" #UdeA
+#Paths
+wd <- 'path_to_working_directory'
+path_<-"path_to_results"
+pathbackward<-'path_to_back-trajectories'
 
-#Retrotrayectorias
-pathbackward<-"C:/Users/tur75984/OneDrive - Temple University/ResearchAssis/CODI/R-CODI/Calibracion/Trayectorias"
-
-#Cargar a una lista los nombres de los archivos
+#Load the file names into a list
 filenames <- list.files(path=pathbackward,pattern="*.txt", full.names=TRUE)
 
-#Cargar todos los archivos usando read.csv
+#Load all files using read.csv. Backward trajectory text files
 ldf <- lapply(filenames,read.csv) 
 
-#Cambiar nombre de cada objeto de la lista (cada archivo)
-#names(ldf)<-substr(filenames, 30,12)
-# Extract only the date portion and clean suffixes
+#Re-name objects in the list: Extract only the date portion and clean suffixes
 names(ldf) <- gsub(".*\\/|(_|-| )?(600|6AM)?\\.txt$", "", filenames) # Remove everything before the last `/` and suffixes
 names(ldf) <- gsub("(\\d{2})(\\d{2})(\\d{4})", "\\1-\\2-\\3", names(ldf)) # Format compact ddmmyyyy into dd-mm-yyyy
-
-names(ldf)
-
 
 #Seleccion de puntos calientes de hasta 5 dias antes desde el momento de analisis
 p.calientes<-read.csv("Puntos_Calientes_VIIRS_09-02-2020_15-05-2020.csv",header=T)

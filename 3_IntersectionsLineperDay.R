@@ -1,7 +1,7 @@
-##### CODIGO PARA INTERSECAR RETROTRAYECTORIAS MODELADAS A 1000 M CON LOS DATOS
-##### DE PUNTOS CALIENTES PARA CADA SEGMENTO DIARIO DE LOS 5 DIAS DE LA RETROTRAYECTORIA
+##### CODE TO INTERSECT 1000 M MODELED BACK-TRAJECTORIES WITH HOTSPOT DATA
+##### FOR EACH DAILY SEGMENT OF THE 5-DAY BACK-TRAJECTORY
 
-#Cargar paquetes
+#Load packages
 {
   library(sf)
   library(lubridate)
@@ -10,23 +10,22 @@
 }
 
      
-############################ Cargar datos ########################################
-#Ruta
-wd <- '/data/home/TU/tur75984/CODI_Intersecciones'
+############################ Load data ########################################
+#Paths
+wd <- 'path_to_working_directory'
 
-path_<-'/data/home/TU/tur75984/CODI_Intersecciones/Resultados'
+path_<-'path_to_results'
 
-#Retrotrayectorias
-pathbackward<-'/data/home/TU/tur75984/CODI_Intersecciones/Traj1000m'
+#Back trajectories
+pathbackward<-'path_to_back-trajectories'
 
-#Cargar a una lista los nombres de los archivos
+#Load the file names into a list
 filenames <- list.files(path=pathbackward,pattern="*.txt", full.names=TRUE)
 
-#Cargar todos los archivos usando read.csv. Backward trajectory text files
+#Load all files using read.csv. Backward trajectory text files
 ldf <- lapply(filenames,read.table,header=T) 
 
-#Cambiar nombre de cada objeto de la lista (cada archivo)
-#str_count(filenames[1]) #Ver numero de caracteres en filenames
+#Rename each item in the list (each file)
 names(ldf)<-substr(filenames, 110,113)
 
 #Seleccion de puntos calientes de hasta 5 dias antes desde el momento de analisis
@@ -277,5 +276,3 @@ BD_final_sum$FRP<-BD_final_sum$FRP_T/BD_final_sum$Incendios
 #Exportar
 write.csv(BD_final,paste0(wd,"/Series/SegmentoRetrotraj_",year,"_v3.csv"))
 write.csv(BD_final_sum,paste0(wd,"/Series/ParametrosIncendios_",year,"_v3.csv"))
-
-print(paste0('Intersecciones listas para ',year))
